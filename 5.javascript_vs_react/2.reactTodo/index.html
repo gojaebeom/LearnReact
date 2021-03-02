@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function Todo(){
+            const [id , setId] = React.useState(1);
+            const [desc, setDesc] = React.useState('');
+            const [todoList, setTodoList] = React.useState([]); 
+
+            function onAdd(){
+                const todo = {id:id, desc:desc};
+                setId(id+1);
+                setDesc('');
+                setTodoList([...todoList, todo]);
+            }
+
+            function onDelete(e){
+                const id = Number(e.target.dataset.id);
+                const newTodoList = todoList.filter(todo => todo.id !== id);
+                setTodoList(newTodoList);
+            }
+
+            return (
+                <div>
+                    <h3>할일 목록</h3>
+                    <ul className="list">
+                        {
+                            todoList.map(todo=>{
+                                return(
+                                    <li key={todo.id}>
+                                        <span>{todo.desc}</span>
+                                        <button 
+                                            data-id={todo.id}
+                                            onClick={onDelete}
+                                        >
+                                            삭제
+                                        </button>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                    <input 
+                        type="text" 
+                        className="desc" 
+                        value={desc}
+                        onChange={e => setDesc(e.target.value)}
+                    />
+                    <button onClick={onAdd}>추가</button>
+                </div>
+            )
+        }
+
+        const root = document.querySelector('#root');
+        ReactDOM.render(<Todo/>, root);
+    </script>
+</body>
+</html>
