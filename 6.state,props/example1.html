@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // onPluse2 함수가 호출되면 count2 상태값을 바꾸게 됩니다.
+        // react는 상태가 바뀌면 리랜더링되기 때문에 Counter 컴포넌트는 이 함수가 호출될 때마다 
+        // 리랜더링 되고 있을것입니다. 문제는 자식 컴포넌트 또한 불필요한 랜더링이 되기 때문에 이것을 막아줄 수 있는 수단이 있습니다. 
+        // react hook에서 지원하는 memo를 사용하여 부모의 상태가 바뀌어도 받아오는 속성이 변경되지 않으면 리랜더링을 방지할 수 있습니다.
+        const Title = React.memo(function Title({title}){
+            //자식 컴포넌트는 부모 컴포넌트로 부터 속성값을 받아 사용할 수 있습니다.
+            //이 때 props 를 통해 props.title 과 같이 사용할 수 있지만 위와 같이
+            //비구조화 할당을 통해 불러오는 것이 가능합니다.
+            console.log('Title 컴포넌트 랜더링 됨');
+            return(
+                <React.Fragment>
+                    {title}
+                </React.Fragment>
+            )
+        })
+        
+
+        function Counter(){
+            // react는 상태를 활용하여 값을 바꿉니다.
+            // 값을 바꿀 때는 실제 값을 바꾸는 것이 아닌 react가 제공해주는 함수를 통하여 값을 바꾸어야 합니다.
+            const [count, setCount] = React.useState(0);
+            const [count2, setCount2] = React.useState(0);
+            
+            const onPlus = ()=> setCount(count+1)
+
+            
+            const onPlus2 = ()=> {
+                console.log(count2);
+                setCount2(count2+1);
+            }
+
+            console.log('Count 컴포넌트 랜더링 됨');
+            return(
+                <React.Fragment>
+                    <Title title={count} />
+                    <button onClick={onPlus}>증가 (속성 변경)</button>
+                    <button onClick={onPlus2}>증가 (속성 변경 x)</button>
+                </React.Fragment>
+            )
+        }
+
+        const root = document.querySelector('#root');
+        ReactDOM.render(<Counter />, root);
+    </script>
+</body>
+</html>

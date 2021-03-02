@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        
+        const Title = React.memo(function Title({title}){
+            //자식 컴포넌트는 부모 컴포넌트로 부터 속성값을 받아 사용할 수 있습니다.
+            //이 때 props 를 통해 props.title 과 같이 사용할 수 있지만 위와 같이
+            //비구조화 할당을 통해 불러오는 것이 가능합니다.
+            console.log('Title 컴포넌트 랜더링 됨');
+            return(
+                <React.Fragment>
+                    {title}
+                </React.Fragment>
+            )
+        })
+        
+        function Counter(){
+            // 속성(props)는 불변값입니다. 따라서 직접 수정하려고 하면 error가 납니다.
+            // 상태(state)값은 불변값이 아니지만, 불변값처럼 관리해주어야 합니다.
+            
+            //const [count, setCount] = React.useState(0);
+            //위의 코드를 아래와 같이 변경하였습니다. onPluse 함수를 확인해주세요.
+            const [count, setCount] = React.useState({value:0});
+            
+            const onPlus = ()=> {
+                //count 객체의 value 값에 1을 증가시켜 setCount를 통해 상태를 변경하려고 하고있습니다.
+                //react는 상태값의 변경유무를 이전값과 비교하여 반영합니다.
+                //여기서 중요한 점은 count는 현재 객체타입이라는 것입니다.
+                //count 객체의 속성값은 변했지만 실제로 count 객체가 변한 것은 아니기 때문에 react는 값이 변경되지 않았다고 생각하고
+                //하단의 setCount 함수 호출을 무시합니다.
+                //다음으로 onPlus2 함수를 확인해주세요.
+                count.value += 1;
+                setCount(count);
+            }
+
+            const onPlus2 = ()=> {
+                //객체의 값을 변경시킬 땐 전개 연산자를 이용하는 것이 좋습니다.
+                //다음 코드는 setCount함수애게 새로운 객체를 인자값으로 주는 모습을 볼 수 있습니다.
+                //이 때 전개연산자 문법을 활용하여 기존의 count 객체의 값을 모두 복사하고 , 뒤에 바뀌는 값만 나열 해주면 되는것이죠.
+                //이로써 기존의 count 객체는 직접 수정하지 않고
+                //새로운 객체를 복사해 상태값이 업데이트가 되는 것을 react가 인정하고 반영해줄것입니다.
+                setCount({...count, value:count.value+1});
+            }
+
+            console.log('Count 컴포넌트 랜더링 됨');
+            return(
+                <React.Fragment>
+                    <Title title={count.value} />
+                    <button onClick={onPlus}>증가 1</button>
+                    <button onClick={onPlus2}>증가 2</button>
+                </React.Fragment>
+            )
+        }
+
+        const root = document.querySelector('#root');
+        ReactDOM.render(<Counter />, root);
+    </script>
+</body>
+</html>
